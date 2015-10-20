@@ -18,17 +18,30 @@ class MoviesController < ApplicationController
     if (params[:ratings] != nil)
       @ratings_hash = params[:ratings]
       @movies = @movies.where(:rating => @ratings_hash.keys)
+      session[:ratings] = @ratings_hash
+    elsif (session[:ratings] != nil)
+      redirect_hash = Hash[*session[:ratings].keys.map {|key| ["ratings[#{key}]", 1]}.flatten]
+      redirect_hash[:sort] = session[:sort]
+      redirect_to movies_path(redirect_hash) and return
     end
     
-    case params[:sort]
-    when "title"
-      @movies = @movies.order(:title)
-      @class_title = "hilite"
-    when "release_date"
-      @movies = @movies.order(:release_date)
-      @class_release_date = "hilite"
+    if (params[:sort] != nil)
+      case params[:sort]
+      when "title"
+        @movies = @movies.order(:title)
+        @class_title = "hilite"
+        session[:sort] = "title"
+      when "release_date"
+        @movies = @movies.order(:release_date)
+        @class_release_date = "hilite"
+        session[:sort] = "release_date"
+      end
+    elsif (session[:sort] != nil)
+      redirect_hash = Hash[*session[:ratings].keys.map {|key| ["ratings[#{key}]", 1]}.flatten]
+      redirect_hash[:sort] = session[:sort]
+      redirect_to movies_path(redirect_hash) and return
     end
-  end
+  end 
   
   def new
     # default: render 'new' template
