@@ -36,8 +36,8 @@ class MoviesController < ApplicationController
     
     if (params[:sort] == nil || params[:ratings] == nil)
       redirect_hash = {}
-      redirect_hash = Hash[*session[:ratings].keys.map {|key| ["ratings[#{key}]", 1]}.flatten] if session[:ratings] != nil
-      redirect_hash[:sort] = session[:sort] if session[:sort] != nil
+      redirect_hash = Hash[*session[:ratings].keys.map {|key| ["ratings[#{key}]", 1]}.flatten]
+      redirect_hash[:sort] = session[:sort]
       redirect_to movies_path(redirect_hash) and return if redirect_hash != {}
     end
   end 
